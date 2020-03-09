@@ -5,6 +5,11 @@ exports.secret = 'gearz-is-my-life';
 exports.signatureHeaderName = 'x-hub-signature';
 
 exports.GITHUB_EVENTS = Object.freeze({
+  PUSH: 'push',
+  PULL_REQUEST: 'pull_request',
+});
+
+exports.PULL_REQUEST_ACTIONS = Object.freeze({
   ASSIGNED: 'assigned',
   UNASSIGNED: 'unassigned',
   REVIEW_REQUESTED: 'review_requested',
@@ -18,4 +23,5 @@ exports.GITHUB_EVENTS = Object.freeze({
   LOCKED: 'locked',
   UNLOCKED: 'unlocked',
   REOPENED: 'reopened',
+  SYNCHRONIZE: 'synchronize',
 });
