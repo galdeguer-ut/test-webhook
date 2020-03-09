@@ -6,7 +6,6 @@ exports.verifyPostData = (req, res, next) => {
   console.log(req.body);
 
   const payload = JSON.stringify(req.body);
-
   if (!payload) {
     return next('Request body empty');
   }
