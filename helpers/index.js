@@ -1,6 +1,8 @@
 const { PULL_REQUEST_ACTIONS } = require('../constants');
 
 exports.processPullRequest = ({ action, merged } = {}) => new Promise((resolve, reject) => {
+  console.log(action);
+
   if (action === PULL_REQUEST_ACTIONS.CLOSED && merged) {
     // Call Jenkins pipeline for merged branch
     // fetch('<URL_TO_JENKINS>')
