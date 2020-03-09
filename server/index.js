@@ -27,6 +27,7 @@ app.post('/github', verifyPostData, (req, res) => {
 
     case GITHUB_EVENTS.PUSH:
       // Process push
+      res.status(200);
       break;
   }
 
