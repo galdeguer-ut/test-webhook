@@ -7,7 +7,11 @@ const app = express();
 app.use(bodyParser.json());
 
 app.post('/github', verifyPostData, (req, res) => {
-  const githubEvent = req.body;
+  const { headers } = req;
+
+  const githubEvent = headers['X-GitHub-Event'];
+
+  console.log(githubEvent);
 
   res.status(200).send('Request body was signed');
 });
