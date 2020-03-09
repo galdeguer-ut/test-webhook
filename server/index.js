@@ -10,8 +10,6 @@ app.use(bodyParser.json());
 app.post('/github', verifyPostData, (req, res) => {
   const githubEvent = req.body;
 
-  console.log(githubEvent);
-
   res.status(200).send('Request body was signed');
 });
 
