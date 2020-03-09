@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const { secret, signatureHeaderName } = require('../constants');
 
 exports.verifyPostData = (req, res, next) => {
+  console.log(req.body);
+
   const payload = JSON.stringify(req.body);
   if (!payload) {
     return next('Request body empty');
