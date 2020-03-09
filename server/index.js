@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const { GITHUB_EVENTS } = require('../constants');
 const { verifyPostData } = require('../middlewares');
+const { processPullRequest } = require('../helpers');
 
 const app = express();
 app.use(bodyParser.json());
@@ -11,10 +13,24 @@ app.post('/github', verifyPostData, (req, res) => {
 
   const githubEvent = headers['x-github-event'];
 
-  console.log(githubEvent);
-  console.log(body);
+  switch (githubEvent) {
+    case GITHUB_EVENTS.PULL_REQUEST:
+      const { action, pull_request: { merged } } = body;
+      processPullRequest({ action, merged })
+        .then(() => {
+          res.status(200);
+        })
+        .catch(() => {
+          res.status(500).send('Something went wrong with Jenkins');
+        });
+      break;
 
-  res.status(200).send('Request body was signed');
+    case GITHUB_EVENTS.PUSH:
+      // Process push
+      break;
+  }
+
+  res.status(200);
 });
 
 app.use((err, req, res, next) => {
