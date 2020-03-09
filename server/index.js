@@ -18,6 +18,7 @@ app.post('/github', verifyPostData, (req, res) => {
       const { action, pull_request: { merged } } = body;
       processPullRequest({ action, merged })
         .then(() => {
+          console.log('asgasgasfiashf uasfuyasgfuygasuyfgausygas');
           res.status(200);
         })
         .catch(() => {
@@ -29,9 +30,11 @@ app.post('/github', verifyPostData, (req, res) => {
       // Process push
       res.status(200);
       break;
-  }
 
-  res.status(200);
+    default:
+      res.status(200).send(`Skipping ${githubEvent} event.`);
+      break;
+  }
 });
 
 app.use((err, req, res, next) => {
