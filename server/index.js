@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet')
 const bodyParser = require('body-parser');
 
 const { GITHUB_EVENTS } = require('../constants');
@@ -6,6 +7,7 @@ const { verifyPostData } = require('../middlewares');
 const { processPullRequest } = require('../helpers');
 
 const app = express();
+app.use(helmet());
 app.use(bodyParser.json());
 
 app.post('/github', verifyPostData, (req, res) => {
@@ -18,17 +20,11 @@ app.post('/github', verifyPostData, (req, res) => {
       const { action, pull_request: { merged } } = body;
       processPullRequest({ action, merged })
         .then(() => {
-          console.log('asgasgasfiashf uasfuyasgfuygasuyfgausygas');
           res.status(200).send('All ok');
         })
         .catch(() => {
           res.status(500).send('Something went wrong with Jenkins');
         });
-      break;
-
-    case GITHUB_EVENTS.PUSH:
-      // Process push
-      res.status(200);
       break;
 
     default:
