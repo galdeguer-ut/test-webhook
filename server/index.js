@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.post('/github', verifyPostData, (req, res) => {
   const { headers } = req;
 
-  const githubEvent = headers['X-GitHub-Event'];
+  const githubEvent = headers['x-github-event'];
 
   console.log(githubEvent);
 
