@@ -19,7 +19,7 @@ app.post('/github', verifyPostData, (req, res) => {
       processPullRequest({ action, merged })
         .then(() => {
           console.log('asgasgasfiashf uasfuyasgfuygasuyfgausygas');
-          res.status(200);
+          res.status(200).send('All ok');
         })
         .catch(() => {
           res.status(500).send('Something went wrong with Jenkins');
