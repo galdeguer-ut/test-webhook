@@ -2,50 +2,36 @@ const crypto = require('crypto');
 
 const { secret, signatureHeaderName } = require('../constants');
 
-const createComparisonSignature = (body) => {
-  const hmac = crypto.createHmac('sha1', secret);
-  const self_signature = hmac.update(JSON.stringify(body)).digest('hex');
-  return `sha1=${self_signature}`; // shape in GitHub header
-};
-
-const compareSignatures = (signature, comparison_signature) => {
-  const source = Buffer.from(signature);
-  const comparison = Buffer.from(comparison_signature);
-  return crypto.timingSafeEqual(source, comparison); // constant time comparison
-};
-
-// const verifyGithubPayload = (req, res, next) => {
-//   const { headers, body } = req;
-
-//   const signature = headers['x-hub-signature'];
-//   const comparison_signature = createComparisonSignature(body);
-
-//   if (!compareSignatures(signature, comparison_signature)) {
-//     return res.status(401).send('Mismatched signatures');
-//   }
-
-//   const { action, ...payload } = body;
-//   req.event_type = headers['x-github-event']; // one of: https://developer.github.com/v3/activity/events/types/ 
-//   req.action = action;
-//   req.payload = payload;
-//   next();
-// }
-
-exports.verifyPostData = (req, res, next) => {
-  const { headers, body } = req;
-
-  const signature = headers['x-hub-signature'];
-  const comparison_signature = createComparisonSignature(body);
-
-  if (!compareSignatures(signature, comparison_signature)) {
-    return res.status(401).send('Mismatched signatures');
+const verifyGitHub = (req, res, next) => {
+  if (!req.headers['user-agent'].includes('GitHub-Hookshot')) {
+    return next('Invalid sender');
+  }
+  // Compare their hmac signature to our hmac signature
+  // (hmac = hash-based message authentication code)
+  const theirSignature = req.headers[signatureHeaderName];
+  const payload = JSON.stringify(req.body);
+  const ourSignature = `sha1=${crypto.createHmac('sha1', secret).update(payload).digest('hex')}`;
+  if (!crypto.timingSafeEqual(Buffer.from(theirSignature), Buffer.from(ourSignature))) {
+    return next('Invalid signature');
   }
 
-  const { action, ...payload } = body;
-  req.event_type = headers['x-github-event']; // one of: https://developer.github.com/v3/activity/events/types/ 
-  req.action = action;
-  req.payload = payload;
-  next();
+  return next();
+};
+
+exports.verifyPostData = (req, res, next) => {
+  if (!req.headers['user-agent'].includes('GitHub-Hookshot')) {
+    return next('Invalid sender');
+  }
+  // Compare their hmac signature to our hmac signature
+  // (hmac = hash-based message authentication code)
+  const theirSignature = req.headers[signatureHeaderName];
+  const payload = JSON.stringify(req.body);
+  const ourSignature = `sha1=${crypto.createHmac('sha1', secret).update(payload).digest('hex')}`;
+  if (!crypto.timingSafeEqual(Buffer.from(theirSignature), Buffer.from(ourSignature))) {
+    return next('Invalid signature');
+  }
+
+  return next();
 
   // const payload = JSON.stringify(req.body);
   // if (!payload) {
