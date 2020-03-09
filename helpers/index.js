@@ -10,6 +10,7 @@ exports.processPullRequest = ({ action, merged } = {}) => new Promise((resolve, 
     //   .catch(reject);
     resolve();
   } else if ([PULL_REQUEST_ACTIONS.OPENED, PULL_REQUEST_ACTIONS.REOPENED, PULL_REQUEST_ACTIONS.SYNCHRONIZE].includes(action)) {
+    console.log('asofhasofhasf');
     // Call Jenkins pipeline for branch
     // fetch('<URL_TO_JENKINS>')
     //   .then(resolve)
